@@ -21,7 +21,7 @@ def reservas():
 
 # @app.route('/cadastro')
 # def cadastro():
-#     return render_template('cadastro.html')
+#         return render_template('cadastro.html')
 
 # Pega os dados do método POST no HTML do template
 @app.route('/cadastro', methods=['POST'])
@@ -48,3 +48,4 @@ def reservar_sala():
 @app.route('/listar-salas')
 def listar_salas():
     return render_template('listar-salas.html')
+
