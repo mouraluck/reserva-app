@@ -6,7 +6,7 @@ app = Flask(__name__)
 login_dict = []
 
 
-def pegar_login_armazenado():
+def pegar_login_armazpopenado():
     # sldaps
     print('Pegando dados')
     # login_dict.append(exemplo)
