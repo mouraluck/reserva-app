@@ -17,3 +17,4 @@ def obter_salas():
             }
             salas.append(sala)
     return salas
+    
