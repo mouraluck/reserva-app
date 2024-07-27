@@ -3,6 +3,7 @@ import csv
 
 #passando .csv para acessivel á python
 cadastro_csv = 'cad_usuarios.csv'
+cadastro_sala_csv = 'cad_sala.csv'
 
 app = Flask(__name__)
 
@@ -55,31 +56,19 @@ def logar(email, senha):
     except FileNotFoundError:
         return render_template('login.html', error='Email ou senha incorretos.')
 
+# logica de cadastrar sala no csv sendo construida
 @app.route('/cadastrar-sala', methods=['GET', 'POST'])
-def cadastrar_sala():
-    if request.method == 'POST':
-        tipo = request.form['tipo']
-        capacidade = request.form['capacidade']
-        descricao = request.form['descricao']
-        
-        # Salvar a sala no arquivo CSV
-        with open('salas.csv', 'a', newline='') as arquivo_salas:
-            writer = csv.writer(arquivo_salas)
-            writer.writerow([tipo, capacidade, descricao])
-        
-        # Redirecionar para a lista de salas após o cadastro
-        return redirect(url_for('listar_salas'))
-    
-    return render_template('cadastrar-sala.html')
+def cadastrar_sala(nome, email, senha):
+    with open(cadastro_csv, 'a', newline='') as arquivo_salas:
+        writer = csv.writer(arquivo_salas)
+        writer.writerow([tipo, capacidade, descricao])
+        #verificando função 
+        print(f"dados salvos: {tipo}, {capacidade},{descricao}")
 
 
 # VER QUAL DAS DUAS RESERVAS ESTÃO FUNCIONANDO E SENDO UTEIS
 @app.route('/reservas', methods=['GET', 'POST'])
 def reservas():
-    return render_template('reservas.html')
-
-@app.route('/reservas')
-def salas_reservadas ():
     return render_template('reservas.html')
 
 # verificar se salas estao reservadas
