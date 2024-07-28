@@ -7,6 +7,8 @@ cadastro_sala_csv = 'cad_sala.csv'
 
 app = Flask(__name__)
 
+# FUNÇÕES
+
 # salvar dados digitados pelo usuario no csv
 def salvar_cadastro(nome, email, senha):
     with open(cadastro_csv, 'a', newline='') as arquivo_cadastros:
@@ -16,10 +18,45 @@ def salvar_cadastro(nome, email, senha):
         print(f"dados salvos: {nome}, {email},{senha}")
 
 
-# pagina inicial
-@app.route('/')
-def login():
-    return render_template('login.html')
+# pagina de cadastro
+@app.route('/cadastro', methods=['GET', 'POST'])
+def cadastro():
+    if request.method == 'POST':
+        nome = request.form['nome']
+        email = request.form['email']
+        senha = request.form['senha']
+        salvar_cadastro(nome, email, senha)
+        return redirect(url_for('reservas'))
+    return render_template('cadastro.html')
+
+# salvar sala digitada pelo usuario no csv 
+def salvar_sala(tipo, capacidade, descricao):
+    with open(cadastro_sala_csv, 'a', newline = '') as salas_cadastros:
+        writer = csv.writer(salas_cadastros)
+        writer.writerow([tipo, capacidade, descricao])
+
+        print(f"dados salvos: {tipo}, {capacidade}, {descricao}")
+
+
+@app.route('/detalhe', methods=['GET', 'POST'])
+def detalhe_sala():
+    if request.method == 'POST':
+        tipo = request.form['tipo']
+        capacidade = request.form['capacidade'] 
+        descricao = request.form['descricao']
+        salvar_sala(tipo, capacidade, descricao)
+        #nao sei oq to fazendo
+        return redirect(url_for('descricao-sala'))
+    return render_template ()
+
+
+
+
+
+@app.route('/descricao-sala', methods = ['GET', 'POST'])
+
+# 
+@app.route('/detalhe-reserva', methods = ['GET', 'POST'])
 
 #verificação de login
 @app.route('/', methods=['POST'])
@@ -36,35 +73,17 @@ def logar(email, senha):
     except FileNotFoundError:
         return render_template('login.html', error='Email ou senha incorretos.')
 
-# pagina de cadastro
-@app.route('/cadastro', methods=['GET', 'POST'])
-def cadastro():
-    if request.method == 'POST':
-        nome = request.form['nome']
-        email = request.form['email']
-        senha = request.form['senha']
-        salvar_cadastro(nome, email, senha)
-        return redirect(url_for('reservas'))
-    return render_template('cadastro.html')
 
-
-
-
-# logica de cadastrar sala no csv sendo construida
+# ROTAS "VAZIAS"
 @app.route('/cadastrar-sala', methods=['GET', 'POST'])
-def cadastrar_sala_post(nome, email, senha):
-    with open(cadastro_csv, 'a', newline='') as arquivo_salas:
-        writer = csv.writer(arquivo_salas)
-        writer.writerow([tipo, capacidade, descricao])
-        #verificando função 
-        print(f"dados salvos: {tipo}, {capacidade},{descricao}")
-
-@app.route('/cadastrar-sala')
-def cadastrar_sala():
-    return render_template('cadastrar-sala.html')
 
 
-# VER QUAL DAS DUAS RESERVAS ESTÃO FUNCIONANDO E SENDO UTEIS
+# pagina inicial
+@app.route('/')
+def login():
+    return render_template('login.html')
+
+
 @app.route('/reservas', methods=['GET', 'POST'])
 def reservas():
     return render_template('reservas.html')
