@@ -17,17 +17,20 @@ def salvar_cadastro(nome, email, senha):
         #verificando função 
         print(f"dados salvos: {nome}, {email},{senha}")
 
-
-# pagina de cadastro
-@app.route('/cadastro', methods=['GET', 'POST'])
+@app.route('/cadastro')
 def cadastro():
+    return render_template('cadastro.html')
+# pagina de cadastro
+
+
+@app.route('/cadastro', methods=['GET', 'POST'])
+def cadastro_post():
     if request.method == 'POST':
         nome = request.form['nome']
         email = request.form['email']
         senha = request.form['senha']
         salvar_cadastro(nome, email, senha)
-        return redirect(url_for('reservas'))
-    return render_template('cadastro.html')
+        return render_template('reservas.html')
 
 # salvar sala digitada pelo usuario no csv 
 def salvar_sala(tipo, capacidade, descricao):
@@ -38,25 +41,25 @@ def salvar_sala(tipo, capacidade, descricao):
         print(f"dados salvos: {tipo}, {capacidade}, {descricao}")
 
 
-@app.route('/detalhe', methods=['GET', 'POST'])
+@app.route('/detalhe-reserva', methods=['GET', 'POST'])
 def detalhe_sala():
     if request.method == 'POST':
         tipo = request.form['tipo']
         capacidade = request.form['capacidade'] 
         descricao = request.form['descricao']
         salvar_sala(tipo, capacidade, descricao)
-        #nao sei oq to fazendo
-        return redirect(url_for('descricao-sala'))
-    return render_template ()
-
-
+        return render_template('cadastrar-sala.html')
 
 
 
 @app.route('/descricao-sala', methods = ['GET', 'POST'])
 
-# 
-@app.route('/detalhe-reserva', methods = ['GET', 'POST'])
+
+
+# pagina inicial
+@app.route('/')
+def login():
+    return render_template('login.html')
 
 #verificação de login
 @app.route('/', methods=['POST'])
@@ -77,11 +80,12 @@ def logar(email, senha):
 # ROTAS "VAZIAS"
 @app.route('/cadastrar-sala', methods=['GET', 'POST'])
 
+@app.route('/cadastrar-sala')
+def cadastrar_sala():
+    return render_template('cadastrar-sala.html')
 
-# pagina inicial
-@app.route('/')
-def login():
-    return render_template('login.html')
+
+
 
 
 @app.route('/reservas', methods=['GET', 'POST'])
