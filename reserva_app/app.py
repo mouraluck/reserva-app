@@ -2,15 +2,17 @@ from flask import Flask, render_template, request, redirect, url_for
 import csv
 
 #csv acessivel a python
-cadastro_csv = 'cad_usuarios.csv'
+users = 'cad_usuarios.csv'
 cadastro_sala_csv = 'cad_sala.csv'
 
 app = Flask(__name__)
 
+salas_dic = []
+
 
 # salvar dados digitados pelo usuario no csv ✔️
 def salvar_cadastro(nome, email, senha):
-    with open(cadastro_csv, 'a', newline='') as arquivo_cadastros:
+    with open(users, 'a', newline='') as arquivo_cadastros:
         writer = csv.writer(arquivo_cadastros)
         writer.writerow([nome, email, senha])
         #verificando função 
@@ -42,7 +44,7 @@ def salvar_sala(tipo, capacidade, descricao):
 
 # ta dando certo ✔️, mas tem problema da rota
 # detalhe da reserva mostra os dados da sala reservada, horario inicial, final,
-@app.route('/detalhe-reserva', methods=['GET', 'POST'])
+@app.route('/detalhe-reserva', methods=['POST'])
 def detalhe_sala():
     if request.method == 'POST':
         tipo = request.form['tipo']
@@ -52,7 +54,7 @@ def detalhe_sala():
         if tipo == '' or capacidade == '' or descricao == '':
             return render_template ('cadastrar-sala.html')
         salvar_sala(tipo, capacidade, descricao)
-        return render_template('listar-sala.html')
+    return render_template('listar-sala.html')
 
 @app.route('/descricao-sala', methods = ['GET', 'POST'])
 
@@ -73,10 +75,35 @@ def reservar_sala():
     return render_template('reservar-sala.html')
 
 
-# listar salas reservadas
+# listar salas 
 @app.route('/listar-salas')
 def listar_salas():
-    return render_template('listar-salas.html')
+    with open(cadastro_sala_csv, 'r') as arquivo_salas:
+        salas_dic = [] 
+        count = 0
+        next(arquivo_salas)
+        for linha in arquivo_salas: 
+            
+            tipo = ''
+            count= count+1
+            if linha[0] == '1':
+                tipo = 'Sala 1'
+            elif linha[0] == '2':
+                tipo = 'Sala 2'
+            elif linha[0] == '3':
+                tipo = 'Sala 3'
+            # Cria um novo dicionário para cada item da linha
+            sala = {
+                'count': count,
+                'tipo': tipo,
+                'capacidade': linha[1],
+                'descricao': linha[2]
+            }
+            
+            salas_dic.append(sala)  # Adiciona o novo dicionário à lista
+            
+
+    return render_template('listar-salas.html', salas=salas_dic)
 
 
 #  PARA FAZER:
@@ -89,7 +116,7 @@ def listar_salas():
 
 # / - não está referenciando nada (tem que referenciar a tela de login, mesmo que nao tenha login)❌
 # /cadastro - ✔️
-# /logar - rota comentada, não deu certo ❌
+# /logar - rota comentada, não deu certo ✔️ 
 # /sucess - rota comentada, era caso o login desse certo ❌
 # /detalhe-reserva - erro ❌
 # /descricao-sala - não faz sentido, vai para Cadastrar sala (html) ❌
@@ -97,37 +124,45 @@ def listar_salas():
 # /reservas - indo para reservas ✔️ (não precisa implementar)
 # /reservar-sala - indo para reservar sala ✔️ salvando no csv ❌
 # /listar-salas - indo para listagem das salas ✔️ conectada ao csv a partir da reserva ❌
-# /login - botao de logout vai pra essa rota mas a rota não existe ❌
+# /login - botao de logout vai pra essa rota mas a rota não existe ✔️
 
 
 # NÃO ESTÁ DANDO CERTO, VOU COMENTAR:
 
-#@app.route('/logar', methods=['GET','POST'])
-# Função para verificar se o usuário está registrado no CSV
-#def logar():
-#    if request.method == 'POST':
-#        email = request.form['email']
-#        senha = request.form ['senha']
-#
-#        with open (cadastro_csv, mode ='r') as arquivo_cadastros:
-#            leitor = csv.leitor(arquivo_cadastros)
-#
-#            for linha in leitor:
-#                if linha['email'] == email and linha['senha'] == senha:
-#                    return redirect(url_for('sucess'))
-#            return "invalido", 401
-#    return render_template('cadastrar-sala.html')
+@app.route('/', methods=['POST'])
+def logar():
+    valid = False
+    if request.method == 'POST':
+        email = request.form['email']
+        senha = request.form['senha']
+
+        
+
+        with open(users, 'r', newline='' ) as arquivo_cadastros:
+            leitor = csv.DictReader(arquivo_cadastros, fieldnames=['email', 'senha']) 
+
+            for linha in leitor:  # leitor já retorna um dicionário em cada iteração
+                if linha['email'] == email and linha['senha'] == senha:
+                    print(leitor.reader['email', 'senha'])  # Imprime o email encontrado (opcional)
+                    valid = True
+    if valid==True:
+        return render_template('sucess.html')
+    else:
+        return render_template('login.html')
+
+
+
 
 #teste se Login deu certo:
-#@app.route('/sucess')
-#def sucess():
-#    return "LOGIN DEU CERTO!!!!"
+@app.route('/sucess')
+def sucess():
+   return render_template('sucess.html')
 
 
-# pagina inicial
-#@app.route('/')
-#def login():
-#    return render_template('login.html')
+#pagina inicial
+@app.route('/')
+def login():
+   return render_template('login.html')
 
 
 if __name__ == '__main__':
