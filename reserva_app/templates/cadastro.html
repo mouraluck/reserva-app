@@ -10,23 +10,26 @@
   <div class="card position-absolute top-50 start-50 translate-middle w-75">
     <div class="card-body">
       <h5 class="card-title">Cadastro</h5>
-        <form method="post" action="/cadastro">
-          <label for="nome">Nome:</label>
-          <input type="text" id="nome" name="nome" required>
-          <br>
-          <label for="email">Email:</label>
-          <input type="email" id="email" name="email" required>
-          <br>
-          <label for="senha">Senha:</label>
-          <input type="password" id="senha" name="senha" required>
-          <br>
-          <button type="submit">Cadastrar</button>
-        </form>
+      <form class="card-text" action="/cadastro" method="post">
+        <div class="mb-3">
+          <label for="nome" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="senha" class="form-label">Senha</label>
+          <input type="password" class="form-control" id="senha" name="senha" required>
+        </div>
+        <div class="mb-3">
+          <button type="submit" class="btn btn-dark">Cadastrar</button>
+        </div>
+      </form>
     </div>
   </div>
-
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
-

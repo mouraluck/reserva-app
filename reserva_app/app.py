@@ -64,6 +64,8 @@ def cadastrar_sala():
     return render_template('cadastrar-sala.html')
 
 
+
+
 @app.route('/reservas', methods=['GET', 'POST'])
 def reservas():
     return render_template('reservas.html')
@@ -108,9 +110,9 @@ def listar_salas():
 
 #  PARA FAZER:
 
-# criar rota / e pegar codigo do latorre e deixar igual
-# desabilitar botão de logout - dá erro
-# no html de cadastro: jogar mensagem "preencha todos os campos" ao inves de recarregar a pagina
+# criar rota / e pegar codigo do latorre e deixar igual✔️
+# desabilitar botão de logout - dá erro✔️
+# no html de cadastrar sala: jogar mensagem "preencha todos os campos" ao inves de recarregar a pagina 
 
 # ROTAS:
 
