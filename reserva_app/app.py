@@ -8,7 +8,7 @@ cadastro_sala_csv = 'cad_sala.csv'
 app = Flask(__name__)
 
 
-# salvar dados digitados pelo usuario no csv
+# salvar dados digitados pelo usuario no csv ✔️
 def salvar_cadastro(nome, email, senha):
     with open(cadastro_csv, 'a', newline='') as arquivo_cadastros:
         writer = csv.writer(arquivo_cadastros)
@@ -17,7 +17,7 @@ def salvar_cadastro(nome, email, senha):
         print(f"dados salvos: {nome}, {email},{senha}")
 
 
-# rota /cadastro
+# rota /cadastro ✔️
 @app.route('/cadastro')
 def cadastro():
     return render_template('cadastro.html')
@@ -32,28 +32,7 @@ def cadastro_post():
         return render_template('reservas.html')
 
 
-@app.route('/logar', methods=['GET','POST'])
-# Função para verificar se o usuário está registrado no CSV
-def logar():
-    if request.method == 'POST':
-        email = request.form['email']
-        senha = request.form ['senha']
-
-        with open (cadastro_csv, mode ='r') as arquivo_cadastros:
-            leitor = csv.leitor(arquivo_cadastros)
-
-            for linha in leitor:
-                if linha['email'] == email and linha['senha'] == senha:
-                    return redirect(url_for('sucess'))
-            return "invalido", 401
-    return render_template('cadastrar-sala.html')
-
-
-@app.route('/sucess')
-def sucess():
-    return "LOGIN DEU CERTO!!!!"
-
-# salvar sala digitada pelo usuario no csv 
+# salvar sala digitada pelo usuario no csv ✔️
 def salvar_sala(tipo, capacidade, descricao):
     with open(cadastro_sala_csv, 'a', newline = '') as salas_cadastros:
         writer = csv.writer(salas_cadastros)
@@ -61,7 +40,8 @@ def salvar_sala(tipo, capacidade, descricao):
 
         print(f"dados salvos: {tipo}, {capacidade}, {descricao}")
 
-# ta errado, detalhe da reserva mostra os dados da sala reservada, horario inicial, final,
+# ta dando certo ✔️, mas tem problema da rota
+# detalhe da reserva mostra os dados da sala reservada, horario inicial, final,
 @app.route('/detalhe-reserva', methods=['GET', 'POST'])
 def detalhe_sala():
     if request.method == 'POST':
@@ -74,44 +54,81 @@ def detalhe_sala():
         salvar_sala(tipo, capacidade, descricao)
         return render_template('listar-sala.html')
 
-
-
 @app.route('/descricao-sala', methods = ['GET', 'POST'])
 
 
-#botao de logout vai pra rota /login  mas nao vai pra nenhum lugar essa rota
-
-# pagina inicial
-#@app.route('/')
-#def login():
-#    return render_template('login.html')
-
-#verificação de login
-
-# ROTAS "VAZIAS"
 @app.route('/cadastrar-sala', methods=['GET', 'POST'])
-
-@app.route('/cadastrar-sala')
 def cadastrar_sala():
     return render_template('cadastrar-sala.html')
-
-
-
 
 
 @app.route('/reservas', methods=['GET', 'POST'])
 def reservas():
     return render_template('reservas.html')
 
+
 # verificar se salas estao reservadas
 @app.route('/reservar-sala')
 def reservar_sala():
     return render_template('reservar-sala.html')
 
+
 # listar salas reservadas
 @app.route('/listar-salas')
 def listar_salas():
     return render_template('listar-salas.html')
+
+
+#  PARA FAZER:
+
+# criar rota / e pegar codigo do latorre e deixar igual
+# desabilitar botão de logout - dá erro
+# no html de cadastro: jogar mensagem "preencha todos os campos" ao inves de recarregar a pagina
+
+# ROTAS:
+
+# / - não está referenciando nada (tem que referenciar a tela de login, mesmo que nao tenha login)❌
+# /cadastro - ✔️
+# /logar - rota comentada, não deu certo ❌
+# /sucess - rota comentada, era caso o login desse certo ❌
+# /detalhe-reserva - erro ❌
+# /descricao-sala - não faz sentido, vai para Cadastrar sala (html) ❌
+# /cadastrar-sala - vai para Cadastrar sala (html) ✔️
+# /reservas - indo para reservas ✔️ (não precisa implementar)
+# /reservar-sala - indo para reservar sala ✔️ salvando no csv ❌
+# /listar-salas - indo para listagem das salas ✔️ conectada ao csv a partir da reserva ❌
+# /login - botao de logout vai pra essa rota mas a rota não existe ❌
+
+
+# NÃO ESTÁ DANDO CERTO, VOU COMENTAR:
+
+#@app.route('/logar', methods=['GET','POST'])
+# Função para verificar se o usuário está registrado no CSV
+#def logar():
+#    if request.method == 'POST':
+#        email = request.form['email']
+#        senha = request.form ['senha']
+#
+#        with open (cadastro_csv, mode ='r') as arquivo_cadastros:
+#            leitor = csv.leitor(arquivo_cadastros)
+#
+#            for linha in leitor:
+#                if linha['email'] == email and linha['senha'] == senha:
+#                    return redirect(url_for('sucess'))
+#            return "invalido", 401
+#    return render_template('cadastrar-sala.html')
+
+#teste se Login deu certo:
+#@app.route('/sucess')
+#def sucess():
+#    return "LOGIN DEU CERTO!!!!"
+
+
+# pagina inicial
+#@app.route('/')
+#def login():
+#    return render_template('login.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
