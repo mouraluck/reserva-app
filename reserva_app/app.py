@@ -46,7 +46,7 @@ def salvar_sala(tipo, capacidade, descricao):
 
 # ta dando certo ✔️, mas tem problema da rota
 # detalhe da reserva mostra os dados da sala reservada, horario inicial, final,
-@app.route('/detalhe-reserva', methods=['POST'])
+@app.route('/detalhe-sala', methods=['POST'])
 def detalhe_sala():
     if request.method == 'POST':
         tipo = request.form['tipo']
@@ -90,7 +90,7 @@ def detalhe_reserva():
             return render_template('reservar-sala.html', error="Por favor, preencha todos os campos.")
         
         salvar_reserva(sala, inicio, fim)
-        return render_template('detalhe-reserva.html') 
+        return render_template('reservas.html') 
     
 
 
