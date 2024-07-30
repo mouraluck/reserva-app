@@ -4,6 +4,9 @@ import csv
 #csv acessivel a python
 users = 'cad_usuarios.csv'
 cadastro_sala_csv = 'cad_sala.csv'
+reserva_csv = 'res_sala.csv'  
+
+
 
 app = Flask(__name__)
 
@@ -39,7 +42,6 @@ def salvar_sala(tipo, capacidade, descricao):
     with open(cadastro_sala_csv, 'a', newline = '') as salas_cadastros:
         writer = csv.writer(salas_cadastros)
         writer.writerow([tipo, capacidade, descricao])
-
         print(f"dados salvos: {tipo}, {capacidade}, {descricao}")
 
 # ta dando certo ✔️, mas tem problema da rota
@@ -64,6 +66,32 @@ def cadastrar_sala():
     return render_template('cadastrar-sala.html')
 
 
+# verificar se salas estao reservadas
+@app.route('/reservar-sala')
+def reservar_sala():
+    return render_template('reservar-sala.html')
+
+#salva a reserva no csv
+def salvar_reserva(sala, inicio, fim):
+    with open(reserva_csv, 'a', newline='') as arquivo_reservas:
+        writer = csv.writer(arquivo_reservas)
+        writer.writerow([sala, inicio, fim])
+        print(f"Reserva salva: Sala {sala}, Início {inicio}, Fim {fim}")
+
+#mostra os detalhes da reserva
+@app.route('/detalhe-reserva', methods=['GET', 'POST'])
+def detalhe_reserva():
+    if request.method == 'POST':
+        sala = request.form['sala']
+        inicio = request.form['inicial']
+        fim = request.form['final']
+        
+        if sala == '' or inicio == '' or fim == '':
+            return render_template('reservar-sala.html', error="Por favor, preencha todos os campos.")
+        
+        salvar_reserva(sala, inicio, fim)
+        return render_template('detalhe-reserva.html') 
+    
 
 
 @app.route('/reservas', methods=['GET', 'POST'])
@@ -71,10 +99,6 @@ def reservas():
     return render_template('reservas.html')
 
 
-# verificar se salas estao reservadas
-@app.route('/reservar-sala')
-def reservar_sala():
-    return render_template('reservar-sala.html')
 
 
 # listar salas 
@@ -113,6 +137,7 @@ def listar_salas():
 # criar rota / e pegar codigo do latorre e deixar igual✔️
 # desabilitar botão de logout - dá erro✔️
 # no html de cadastrar sala: jogar mensagem "preencha todos os campos" ao inves de recarregar a pagina 
+# terminar a rota que salva as reservas no csv
 
 # ROTAS:
 
